@@ -1,0 +1,56 @@
+services:
+  db:
+    image: mariadb:10.6
+    container_name: dolibarr_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: StrongRootPass!
+      MYSQL_DATABASE: dolibarr
+      MYSQL_USER: dolibarruser
+      MYSQL_PASSWORD: StrongDolibarrPass!
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - dolinet
+
+  dolibarr:
+    image: dolibarr/dolibarr:latest
+    container_name: dolibarr_app
+    depends_on:
+      - db
+    restart: unless-stopped
+    environment:
+      # DB connection params used by the installer
+      DOLI_DB_HOST: db
+      DOLI_DB_NAME: dolibarr
+      DOLI_DB_USER: dolibarruser
+      DOLI_DB_PASSWORD: StrongDolibarrPass!
+      DOLI_MAIN_URL_ROOT: "https://erp.example.com"   # update when using domain+https
+    volumes:
+      - dolibarr_files:/var/www/html/documents
+      - dolibarr_custom:/var/www/html/custom
+    ports:
+      - "8080:80"   # optional for quick local access; remove when using reverse proxy
+    networks:
+      - dolinet
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: dolibarr_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: StrongRootPass!
+    ports:
+      - "8081:80"
+    networks:
+      - dolinet
+
+volumes:
+  db_data:
+  dolibarr_files:
+  dolibarr_custom:
+
+networks:
+  dolinet:
