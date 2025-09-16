@@ -1,0 +1,84 @@
+Frequently needed Docker commands:
+
+Start the services:
+docker compose docker-compose.yml up -d
+
+Dolibarr ERP:
+http://localhost:8080
+
+To STOP all containers run the below command:
+sudo docker stop $(sudo docker ps -q)
+
+# Remove containers + attached volumes to it.
+docker compose down -v
+
+To START all containers, run the below command:
+docker start $(docker ps -a -q)
+
+To DELETE all docker images, run the below command
+sudo docker system prune --all --force --volumes
+
+# Force remove all volumes
+docker volume rm $(docker volume ls -q)
+
+To execute an interactive shell inside a running Docker container, run the below command:
+sudo docker exec -it <NAME> /bin/bash
+
+Check all volumes:
+docker volume ls
+
+Delete volumes:
+docker volume rm erpnext_docker_db-data erpnext_docker_sites erpnext_docker_logs erpnext_docker_redis-cache-data erpnext_docker_redis-queue-data
+
+Delete all volume at once:
+docker volume prune -f
+
+remove leftover networks:
+docker network prune -f
+
+# See the service specific logs
+docker compose logs scheduler --tail 200
+docker compose logs queue-long --tail 200
+docker compose logs backend --tail 200
+
+# Copy data from docker to host machine:
+docker cp sharmaa1-backend-1:/home/frappe/frappe-bench/apps/ganeshdistapp ./apps/
+
+Restore backup on Dolibarr db:
+To STOP all containers run the below command:
+sudo docker stop $(sudo docker ps -q)
+
+# Remove containers + attached volumes to it.
+docker compose down -v
+
+To START all containers, run the below command:
+docker start $(docker ps -a -q)
+
+To DELETE all docker images, run the below command
+sudo docker system prune --all --force --volumes
+
+# Force remove all volumes
+docker volume rm $(docker volume ls -q)
+
+To execute an interactive shell inside a running Docker container, run the below command:
+sudo docker exec -it <NAME> /bin/bash
+
+Check all volumes:
+docker volume ls
+
+Delete volumes:
+docker volume rm erpnext_docker_db-data erpnext_docker_sites erpnext_docker_logs erpnext_docker_redis-cache-data erpnext_docker_redis-queue-data
+
+Delete all volume at once:
+docker volume prune -f
+
+remove leftover networks:
+docker network prune -f
+
+# See the service specific logs
+docker compose logs scheduler --tail 200
+docker compose logs queue-long --tail 200
+docker compose logs backend --tail 200
+
+# Copy data from docker to host machine:
+mysql -u dolibarruser -pStronPassword dolibarr < ../indrayani_backup/mysqldump_dolibarr_22.0.0_2509162156.sql
