@@ -1,0 +1,6 @@
+# icecream stack env
+DOLI_ICE_DOMAIN=icecream.IndrayaniNaturals.in
+MYSQL_ROOT_PASSWORD=SuperRootStrongPasswordHere!
+DB_ICE_NAME=dolibarr_icecream
+DB_ICE_USER=dolibarr_ice
+DB_ICE_PASS=IceCreamDBPassw0rd!

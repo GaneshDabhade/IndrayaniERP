@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  db_spice:
+    image: mariadb:10.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${DB_SPICE_NAME}"
+      MYSQL_USER: "${DB_SPICE_USER}"
+      MYSQL_PASSWORD: "${DB_SPICE_PASS}"
+    volumes:
+      - db_spice_data:/var/lib/mysql
+    networks:
+      - dolinet
+
+  dolibarr_spice:
+    image: dolibarr/dolibarr:latest
+    depends_on:
+      - db_spice
+    restart: always
+    environment:
+      DOLI_DB_HOST: db_spice
+      DOLI_DB_USER: "${DB_SPICE_USER}"
+      DOLI_DB_PASSWORD: "${DB_SPICE_PASS}"
+      DOLI_DB_NAME: "${DB_SPICE_NAME}"
+      DOLI_MAIN_URL_ROOT: "https://${DOLI_SPICE_DOMAIN}"
+    volumes:
+      - dolibarr_spice_docs:/var/www/html/documents
+      - dolibarr_spice_custom:/var/www/html/custom
+    networks:
+      - dolinet
+
+volumes:
+  db_spice_data:
+  dolibarr_spice_docs:
+  dolibarr_spice_custom:
+
+networks:
+  dolinet:
+    external: true
