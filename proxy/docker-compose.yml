@@ -10,14 +10,13 @@ services:
       - ./conf.d:/etc/nginx/conf.d:ro
       - proxy_letsencrypt:/etc/letsencrypt
       - ./log:/var/log/nginx
+      - ./www:/var/www/certbot
     networks:
       - ice_net
       - spice_net
-  volumes:
-    - ./conf.d:/etc/nginx/conf.d:ro
-    - proxy_letsencrypt:/etc/letsencrypt
-    - ./log:/var/log/nginx
-    - ./www:/var/www/certbot
+
+volumes:
+  proxy_letsencrypt: {}
 
 networks:
   ice_net:
