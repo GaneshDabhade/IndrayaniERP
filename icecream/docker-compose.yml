@@ -25,7 +25,7 @@ services:
       DOLI_DB_USER: "${DB_ICE_USER:-dolibarruser}"
       DOLI_DB_PASSWORD: "${DB_ICE_PASS:-dolipass}"
       DOLI_DB_NAME: "${DB_ICE_NAME:-dolibarr}"
-      DOLI_MAIN_URL_ROOT: "https://ice.IndrayaniNaturals.in"
+      DOLI_MAIN_URL_ROOT: "https://ice.indrayaninaturals.in"
     volumes:
       - ice_dolibarr_docs:/var/www/html/documents
       - ice_dolibarr_custom:/var/www/html/custom
