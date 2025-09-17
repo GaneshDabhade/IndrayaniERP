@@ -2,39 +2,57 @@ version: "3.8"
 services:
   db_ice:
     image: mariadb:10.6
-    restart: always
+    container_name: ice_db
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_DATABASE: "${DB_ICE_NAME}"
-      MYSQL_USER: "${DB_ICE_USER}"
-      MYSQL_PASSWORD: "${DB_ICE_PASS}"
+      MYSQL_DATABASE: "${DB_ICE_NAME:-dolibarr}"
+      MYSQL_USER: "${DB_ICE_USER:-dolibarruser}"
+      MYSQL_PASSWORD: "${DB_ICE_PASS:-dolipass}"
     volumes:
-      - db_ice_data:/var/lib/mysql
+      - ice_db_data:/var/lib/mysql
     networks:
-      - dolinet
+      - ice_net
 
   dolibarr_ice:
     image: dolibarr/dolibarr:latest
+    container_name: ice_dolibarr
     depends_on:
       - db_ice
-    restart: always
+    restart: unless-stopped
     environment:
       DOLI_DB_HOST: db_ice
-      DOLI_DB_USER: "${DB_ICE_USER}"
-      DOLI_DB_PASSWORD: "${DB_ICE_PASS}"
-      DOLI_DB_NAME: "${DB_ICE_NAME}"
-      DOLI_MAIN_URL_ROOT: "https://${DOLI_ICE_DOMAIN}"
+      DOLI_DB_USER: "${DB_ICE_USER:-dolibarruser}"
+      DOLI_DB_PASSWORD: "${DB_ICE_PASS:-dolipass}"
+      DOLI_DB_NAME: "${DB_ICE_NAME:-dolibarr}"
+      DOLI_MAIN_URL_ROOT: "https://ice.IndrayaniNaturals.in"
     volumes:
-      - dolibarr_ice_docs:/var/www/html/documents
-      - dolibarr_ice_custom:/var/www/html/custom
+      - ice_dolibarr_docs:/var/www/html/documents
+      - ice_dolibarr_custom:/var/www/html/custom
+    expose:
+      - "80"
     networks:
-      - dolinet
+      - ice_net
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: ice_pma
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db_ice
+      PMA_USER: root
+      PMA_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    # bind to 127.0.0.1 only - for SSH tunneling or local access
+    ports:
+      - "127.0.0.1:8081:80"
+    networks:
+      - ice_net
 
 volumes:
-  db_ice_data:
-  dolibarr_ice_docs:
-  dolibarr_ice_custom:
+  ice_db_data:
+  ice_dolibarr_docs:
+  ice_dolibarr_custom:
 
 networks:
-  dolinet:
+  ice_net:
     external: true

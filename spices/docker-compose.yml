@@ -2,39 +2,57 @@ version: "3.8"
 services:
   db_spice:
     image: mariadb:10.6
-    restart: always
+    container_name: spice_db
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_DATABASE: "${DB_SPICE_NAME}"
-      MYSQL_USER: "${DB_SPICE_USER}"
-      MYSQL_PASSWORD: "${DB_SPICE_PASS}"
+      MYSQL_DATABASE: "${DB_SPICE_NAME:-dolibarr}"
+      MYSQL_USER: "${DB_SPICE_USER:-dolibarruser}"
+      MYSQL_PASSWORD: "${DB_SPICE_PASS:-dolipass}"
     volumes:
-      - db_spice_data:/var/lib/mysql
+      - spice_db_data:/var/lib/mysql
     networks:
-      - dolinet
+      - spice_net
 
   dolibarr_spice:
     image: dolibarr/dolibarr:latest
+    container_name: spice_dolibarr
     depends_on:
       - db_spice
-    restart: always
+    restart: unless-stopped
     environment:
       DOLI_DB_HOST: db_spice
-      DOLI_DB_USER: "${DB_SPICE_USER}"
-      DOLI_DB_PASSWORD: "${DB_SPICE_PASS}"
-      DOLI_DB_NAME: "${DB_SPICE_NAME}"
-      DOLI_MAIN_URL_ROOT: "https://${DOLI_SPICE_DOMAIN}"
+      DOLI_DB_USER: "${DB_SPICE_USER:-dolibarruser}"
+      DOLI_DB_PASSWORD: "${DB_SPICE_PASS:-dolipass}"
+      DOLI_DB_NAME: "${DB_SPICE_NAME:-dolibarr}"
+      DOLI_MAIN_URL_ROOT: "https://spice.IndrayaniNaturals.in"
     volumes:
-      - dolibarr_spice_docs:/var/www/html/documents
-      - dolibarr_spice_custom:/var/www/html/custom
+      - spice_dolibarr_docs:/var/www/html/documents
+      - spice_dolibarr_custom:/var/www/html/custom
+    expose:
+      - "80"
     networks:
-      - dolinet
+      - spice_net
+
+  phpmyadmin_spice:
+    image: phpmyadmin:latest
+    container_name: spice_pma
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db_spice
+      PMA_USER: root
+      PMA_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    # bind to localhost for safety; use SSH tunnel to access
+    ports:
+      - "127.0.0.1:8082:80"
+    networks:
+      - spice_net
 
 volumes:
-  db_spice_data:
-  dolibarr_spice_docs:
-  dolibarr_spice_custom:
+  spice_db_data:
+  spice_dolibarr_docs:
+  spice_dolibarr_custom:
 
 networks:
-  dolinet:
+  spice_net:
     external: true

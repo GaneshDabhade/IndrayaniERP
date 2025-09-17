@@ -54,3 +54,11 @@ volumes:
 
 networks:
   dolinet:
+
+
+# To obtain SSL certificates using Certbot and store them in a Docker volume
+docker run --rm -it \
+  -v proxy_letsencrypt:/etc/letsencrypt \
+  certbot/certbot certonly --non-interactive --agree-tos \
+  --email admin@IndrayaniNaturals.in --standalone --preferred-challenges http \
+  -d icecream.IndrayaniNaturals.in

@@ -1,7 +1,4 @@
-# spices stack env
-DOLI_SPICE_DOMAIN=spices.IndrayaniNaturals.in
-
-MYSQL_ROOT_PASSWORD=SuperRootStrongPasswordHere!
-DB_SPICE_NAME=dolibarr_spices
-DB_SPICE_USER=dolibarr_spice
-DB_SPICE_PASS=SpicesDBPassw0rd!
+MYSQL_ROOT_PASSWORD_SPICE=VeryStrongRootSpice!
+DB_SPICE_NAME=dolibarr
+DB_SPICE_USER=dolibarruser
+DB_SPICE_PASS=VeryStrongSpiceDBPass!
