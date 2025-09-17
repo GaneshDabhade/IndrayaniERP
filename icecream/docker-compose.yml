@@ -34,20 +34,6 @@ services:
     networks:
       - ice_net
 
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: ice_pma
-    restart: unless-stopped
-    environment:
-      PMA_HOST: db_ice
-      PMA_USER: root
-      PMA_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-    # bind to 127.0.0.1 only - for SSH tunneling or local access
-    ports:
-      - "127.0.0.1:8081:80"
-    networks:
-      - ice_net
-
 volumes:
   ice_db_data:
   ice_dolibarr_docs:

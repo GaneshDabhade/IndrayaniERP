@@ -34,20 +34,6 @@ services:
     networks:
       - spice_net
 
-  phpmyadmin_spice:
-    image: phpmyadmin:latest
-    container_name: spice_pma
-    restart: unless-stopped
-    environment:
-      PMA_HOST: db_spice
-      PMA_USER: root
-      PMA_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-    # bind to localhost for safety; use SSH tunnel to access
-    ports:
-      - "127.0.0.1:8082:80"
-    networks:
-      - spice_net
-
 volumes:
   spice_db_data:
   spice_dolibarr_docs:
